@@ -20,19 +20,13 @@ search.addEventListener("click", () => {
             return response.json();
         })
         .then(json => {
-            // Debugging: Log the JSON response to check its structure
-            console.log('Weather data:', json);
-
             const image = document.querySelector(".weather-box img");
+            const cityName = document.querySelector(".weather-box .city-name");
             const temperature = document.querySelector(".weather-box .tempreture");
             const description = document.querySelector(".weather-box .description");
             const humidity = document.querySelector(".weather-details .humidity span");
             const wind = document.querySelector(".weather-details .wind span");
 
-            // Debugging: Log the weather condition to ensure it matches expected values
-            console.log('Weather condition:', json.weather[0].main);
-
-            // Adjust the conditions to match possible values from the API
             if (json.weather[0].main === "Clear") {
                 image.src = "images/clear.png";
             } else if (json.weather[0].main === "Rain") {
@@ -49,6 +43,7 @@ search.addEventListener("click", () => {
                 image.src = "images/front.png"; // Default image
             }
 
+            cityName.innerHTML = city;
             temperature.innerHTML = `${json.main.temp}°C`;
             description.innerHTML = `${json.weather[0].description}`;
             humidity.innerHTML = `${json.main.humidity}%`;
@@ -56,6 +51,11 @@ search.addEventListener("click", () => {
 
             weatherBox.style.display = "block";
             weatherDetails.style.display = "flex";
+
+            // Voice effect based on weather
+            const synth = window.speechSynthesis;
+            const utterThis = new SpeechSynthesisUtterance(`The weather in ${city} is ${json.weather[0].description} with a temperature of ${json.main.temp} degrees Celsius.`);
+            synth.speak(utterThis);
         })
         .catch(err => {
             console.error("Error fetching weather data:", err);
